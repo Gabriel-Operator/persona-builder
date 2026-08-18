@@ -20,21 +20,32 @@ full stack through the Gabriel Gateway.
 This skill **provisions** resources. After git bindings exist, hand off to
 child skills to author the JSON definitions.
 
-Public skill pack: [`Gabriel-Operator/persona-builder`](https://github.com/Gabriel-Operator/persona-builder).
+This skill ships only from [`Gabriel-Operator/persona-builder`](https://github.com/Gabriel-Operator/persona-builder).
+That is the **create-from-scratch** pack.
+
+[`Gabriel-Operator/gabriel-operator-coding-agent-plugin`](https://github.com/Gabriel-Operator/gabriel-operator-coding-agent-plugin)
+is the **edit-existing-resources** pack (`workflow-builder`, `list-builder`, `pipeline-builder`, `team-agents`, …).
+Installing only that repo does **not** load this interview flow unless `skills/persona-builder` is present.
+
+The gateway bootstrap skill is a third pack:
+`npx github:Gabriel-Operator/gabriel-operator-skills add ./gabriel-operator`.
 
 ## Using this skill in coding agents
 
-| Agent | Install |
+Install **this** pack, then connect MCP. Do not stop after adding the authoring plugin.
+
+| Agent | Install this skill |
 |-------|---------|
 | **NPX / Cursor / Windsurf** | `npx skills add Gabriel-Operator/persona-builder` |
 | **Claude Code** | `/plugin marketplace add Gabriel-Operator/persona-builder` then `/plugin install persona-builder@persona-builder` |
-| **Codex** | `codex plugin marketplace add Gabriel-Operator/persona-builder --sparse .agents/plugins` then install Persona Builder |
+| **Codex** | `codex plugin marketplace add Gabriel-Operator/persona-builder --sparse .agents/plugins` then install **Persona Builder** |
 | **Grok Build** | `grok plugin marketplace add Gabriel-Operator/persona-builder` then `grok plugin install persona-builder --trust` |
 | **OpenClaw** | `npx skills add Gabriel-Operator/persona-builder` then `openclaw gateway connect` |
-| **Full Gabriel Operator plugin** | Also bundled in [`Gabriel-Operator/gabriel-operator-coding-agent-plugin`](https://github.com/Gabriel-Operator/gabriel-operator-coding-agent-plugin) |
+| **Runtime fallback** | MCP `gabriel_get_skill_instructions` with `{ "topic": "persona-builder" }` |
+| **Child JSON authoring (after git exists)** | `Gabriel-Operator/gabriel-operator-coding-agent-plugin` |
 | **Gabriel Operator monorepo** | `cp -R server/skills/persona-builder ./your-workspace/` |
 
-Also connect MCP:
+Required MCP (workspace `gabi_` token):
 
 ```json
 {

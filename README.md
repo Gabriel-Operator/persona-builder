@@ -36,7 +36,11 @@ grok plugin install persona-builder --trust
 
 Also connect MCP Gateway with a workspace `gabi_` token. See [`SKILL.md`](SKILL.md).
 
+Also connect MCP Gateway with a workspace `gabi_` token. See [`SKILL.md`](SKILL.md).
+
 ## Related
 
-- Full authoring plugin: [`Gabriel-Operator/gabriel-operator-coding-agent-plugin`](https://github.com/Gabriel-Operator/gabriel-operator-coding-agent-plugin)
+- This repo is the create-from-scratch skill. Do not install only the authoring plugin and expect this flow.
+- Child JSON authoring after git exists: [`Gabriel-Operator/gabriel-operator-coding-agent-plugin`](https://github.com/Gabriel-Operator/gabriel-operator-coding-agent-plugin)
+- Gateway bootstrap: [`Gabriel-Operator/gabriel-operator-skills`](https://github.com/Gabriel-Operator/gabriel-operator-skills)
 - Product: [gabrieloperator.com](https://gabrieloperator.com)
