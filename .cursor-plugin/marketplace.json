@@ -1,0 +1,18 @@
+{
+  "name": "persona-builder",
+  "owner": {
+    "name": "Gabriel Operator",
+    "email": "support@gabrieloperator.com"
+  },
+  "metadata": {
+    "description": "Provision a Gabriel AI Persona from a Gabi token",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "persona-builder",
+      "source": "./",
+      "description": "Interview and provision a Gabriel AI Persona end to end from a workspace Gabi token."
+    }
+  ]
+}

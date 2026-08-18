@@ -1,0 +1,43 @@
+{
+  "name": "persona-builder",
+  "version": "1.0.0",
+  "description": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token.",
+  "author": {
+    "name": "Gabriel Operator",
+    "email": "support@gabrieloperator.com",
+    "url": "https://github.com/Gabriel-Operator"
+  },
+  "homepage": "https://github.com/Gabriel-Operator/persona-builder",
+  "repository": "https://github.com/Gabriel-Operator/persona-builder",
+  "license": "MIT",
+  "keywords": [
+    "gabriel-operator",
+    "persona-builder",
+    "digital-twin",
+    "skills",
+    "coding-agent"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Persona Builder",
+    "shortDescription": "Create Gabriel AI personas",
+    "longDescription": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token: page, lists, pipeline, workflows, git bindings, team agents, and publish.",
+    "developerName": "Gabriel Operator",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://gabrieloperator.com",
+    "privacyPolicyURL": "https://gabrieloperator.com/privacy",
+    "termsOfServiceURL": "https://gabrieloperator.com/terms",
+    "defaultPrompt": [
+      "Create a Gabriel AI persona from this description using my Gabi token.",
+      "Interview me and provision a new Gabriel persona end to end.",
+      "Set up lists, pipeline, workflows, and git for a new Gabriel persona."
+    ],
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "persona-builder",
+  "version": "1.0.0",
+  "description": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token.",
+  "author": {
+    "name": "Gabriel Operator",
+    "email": "support@gabrieloperator.com"
+  },
+  "homepage": "https://github.com/Gabriel-Operator/persona-builder",
+  "repository": "https://github.com/Gabriel-Operator/persona-builder",
+  "license": "MIT",
+  "keywords": [
+    "gabriel-operator",
+    "persona-builder",
+    "digital-twin"
+  ]
+}

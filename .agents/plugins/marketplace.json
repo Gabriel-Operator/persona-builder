@@ -1,0 +1,21 @@
+{
+  "name": "persona-builder",
+  "interface": {
+    "displayName": "Persona Builder"
+  },
+  "plugins": [
+    {
+      "name": "persona-builder",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Gabriel-Operator/persona-builder.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

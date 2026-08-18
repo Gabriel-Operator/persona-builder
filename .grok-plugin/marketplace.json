@@ -1,0 +1,31 @@
+{
+  "name": "persona-builder",
+  "description": "Provision a Gabriel AI Persona from a Gabi token",
+  "owner": {
+    "name": "Gabriel Operator"
+  },
+  "plugins": [
+    {
+      "name": "persona-builder",
+      "description": "Interview and provision a Gabriel AI Persona end to end from a workspace Gabi token.",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Gabriel-Operator/persona-builder.git"
+      },
+      "homepage": "https://github.com/Gabriel-Operator/persona-builder",
+      "keywords": [
+        "gabriel-operator",
+        "persona-builder",
+        "digital-twin"
+      ],
+      "domains": [
+        "gabrieloperator.com"
+      ],
+      "version": "1.0.0",
+      "author": {
+        "name": "Gabriel Operator"
+      }
+    }
+  ]
+}
