@@ -72,7 +72,7 @@ environment and is sent only to the MCP Gateway host as a bearer token.
 
 ## Support
 
-- Email: support@gabrieloperator.com
+- Email: hello@gabrieloperator.com
 - Issues: https://github.com/Gabriel-Operator/persona-builder/issues
 
 ## Related
