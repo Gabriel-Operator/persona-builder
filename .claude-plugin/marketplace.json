@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Provision a Gabriel AI Persona from a Gabi token",
-    "version": "1.0.0"
+    "version": "1.3.0"
   },
   "plugins": [
     {

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "gabriel": {
+      "type": "http",
+      "url": "${GABRIEL_MCP_URL:-https://gabrieloperator.com/mcp/gateway}",
+      "headers": {
+        "Authorization": "Bearer ${GABRIEL_TOKEN}"
+      }
+    }
+  }
+}

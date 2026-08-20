@@ -1,6 +1,6 @@
 {
   "name": "persona-builder",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token.",
   "author": {
     "name": "Gabriel Operator",

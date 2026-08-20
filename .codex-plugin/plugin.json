@@ -1,6 +1,6 @@
 {
   "name": "persona-builder",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Sign up on Gabriel Operator, copy a Gabi token, then interview and provision a Gabriel AI Persona.",
   "author": {
     "name": "Gabriel Operator",

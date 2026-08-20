@@ -8,7 +8,7 @@ description: >
   a new persona from a description rather than edit an already-bound git repo.
 metadata:
   author: gabriel-operator
-  version: "1.3"
+  version: "1.3.0"
 ---
 
 # Persona Builder
@@ -37,7 +37,7 @@ Install **this** pack, then connect MCP. Do not stop after adding the authoring 
 | Agent | Install this skill |
 |-------|---------|
 | **NPX / Cursor / Windsurf** | `npx skills add Gabriel-Operator/persona-builder` |
-| **Claude Code** | `/plugin marketplace add Gabriel-Operator/persona-builder` then `/plugin install persona-builder@persona-builder` |
+| **Claude Code** | `/plugin marketplace add Gabriel-Operator/persona-builder` then `/plugin install persona-builder@persona-builder` (bundles the `gabriel` MCP server) |
 | **Codex** | `codex plugin marketplace add Gabriel-Operator/persona-builder --sparse .agents/plugins` then install **Persona Builder** |
 | **Grok Build** | `grok plugin marketplace add Gabriel-Operator/persona-builder` then `grok plugin install persona-builder --trust` |
 | **OpenClaw** | `npx skills add Gabriel-Operator/persona-builder` then `openclaw gateway connect` |
@@ -45,12 +45,25 @@ Install **this** pack, then connect MCP. Do not stop after adding the authoring 
 | **Child JSON authoring (after git exists)** | `Gabriel-Operator/gabriel-operator-coding-agent-plugin` |
 | **Gabriel Operator monorepo** | `cp -R server/skills/persona-builder ./your-workspace/` |
 
-Required MCP (workspace `gabi_` token):
+Required MCP (workspace `gabi_` token).
+
+**Claude Code:** the plugin ships `.mcp.json`, so the `gabriel` server is
+configured on install. Only export the token, then start a new session:
+
+```bash
+export GABRIEL_TOKEN='gabi_...'
+```
+
+See [`gabriel-mcp-setup`](https://github.com/Gabriel-Operator/persona-builder/blob/main/skills/gabriel-mcp-setup/SKILL.md) if the server does not
+connect.
+
+**Other agents:** configure it by hand.
 
 ```json
 {
   "mcpServers": {
     "gabriel": {
+      "type": "http",
       "url": "https://gabrieloperator.com/mcp/gateway",
       "headers": {
         "Authorization": "Bearer gabi_<token>"
@@ -60,7 +73,8 @@ Required MCP (workspace `gabi_` token):
 }
 ```
 
-Local origin example: `http://localhost:3000/mcp/gateway`.
+Local origin example: `http://localhost:3000/mcp/gateway` (or set
+`GABRIEL_MCP_URL` when using the bundled config).
 
 ## Authentication
 
