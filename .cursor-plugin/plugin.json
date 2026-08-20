@@ -4,7 +4,7 @@
   "description": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token.",
   "author": {
     "name": "Gabriel Operator",
-    "email": "support@gabrieloperator.com"
+    "email": "hello@gabrieloperator.com"
   },
   "homepage": "https://github.com/Gabriel-Operator/persona-builder",
   "repository": "https://github.com/Gabriel-Operator/persona-builder",
