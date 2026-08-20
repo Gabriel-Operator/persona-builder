@@ -1,7 +1,7 @@
 {
   "name": "persona-builder",
-  "version": "1.0.0",
-  "description": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token.",
+  "version": "1.2.0",
+  "description": "Sign up on Gabriel Operator, copy a Gabi token, then interview and provision a Gabriel AI Persona.",
   "author": {
     "name": "Gabriel Operator",
     "email": "support@gabrieloperator.com",
@@ -20,8 +20,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Persona Builder",
-    "shortDescription": "Create Gabriel AI personas",
-    "longDescription": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token: page, lists, pipeline, workflows, git bindings, team agents, and publish.",
+    "shortDescription": "Sign up + copy Gabi token",
+    "longDescription": "Sign up at https://gabrieloperator.com/signup. Open Workspace, go to Dashboard, and copy your Gabi token (the key that starts with gabi_). Connect that token in ChatGPT before you run this plugin. Do not paste the raw token into chat.\n\nThis plugin interviews you and helps you build your dream AI persona faster.",
     "developerName": "Gabriel Operator",
     "category": "Productivity",
     "capabilities": [
@@ -32,7 +32,7 @@
     "privacyPolicyURL": "https://gabrieloperator.com/privacy",
     "termsOfServiceURL": "https://gabrieloperator.com/terms",
     "defaultPrompt": [
-      "Create a Gabriel AI persona from this description using my Gabi token.",
+      "I signed up on Gabriel Operator and connected my Gabi token. Create a persona from this description.",
       "Interview me and provision a new Gabriel persona end to end.",
       "Set up lists, pipeline, workflows, and git for a new Gabriel persona."
     ],

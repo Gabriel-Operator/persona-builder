@@ -36,7 +36,7 @@ grok plugin install persona-builder --trust
 
 Also connect MCP Gateway with a workspace `gabi_` token. See [`SKILL.md`](SKILL.md).
 
-Also connect MCP Gateway with a workspace `gabi_` token. See [`SKILL.md`](SKILL.md).
+If you do not have a token yet: sign up at https://gabrieloperator.com/signup, open Workspace -> Dashboard, copy the **Gateway API key** pill (`gabi_...`), then connect MCP. Do not paste the raw token into chat.
 
 ## Related
 
