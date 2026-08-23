@@ -3,8 +3,8 @@ name: persona-builder
 description: >
   Interview a user and provision a Gabriel AI Persona end to end from a workspace
   Gabi token: page, lists, pipeline/machine, operator workflows, git repos and
-  bindings, Page Builder team-agent endpoints, workspace promote/validate/publish,
-  and optional persona-scoped key. Use this skill when the user wants to create
+  bindings, Page Builder team-agent endpoints, specification coverage, functional
+  evals, gated live publish, and optional persona-scoped key. Use this skill when the user wants to create
   a new persona from a description rather than edit an already-bound git repo.
 metadata:
   author: gabriel-operator
@@ -144,11 +144,13 @@ Do not dump a blank page and stop. Collect, propose, confirm, then provision.
 1. Confirm the workspace token is available (env or MCP). If it is missing,
    follow **If the token is missing** above and wait. Then run **Git provisioning (ask once)** — do not probe with a throwaway `gabriel_create_git_repository`.
 2. Ask what the persona does if the user did not already describe it. Derive a title, short description, slug, and visibility (`private` default). Confirm before creating.
-3. Propose the data model: which lists (columns), which pipeline/machine (stages + transitions), which operator workflows / slash commands, and whether Page Builder event team agents are needed. Confirm the proposal.
+3. Extract explicit business requirements and unresolved acceptance questions. Propose the data model: which lists (columns), which pipeline/machine (stages + transitions), which operator workflows / slash commands, whether Page Builder event team agents are needed, and what deterministic evidence will prove each outcome. Confirm the proposal; never silently invent a business acceptance criterion.
 4. Provision in the order below. Create lists and pipelines **before** any config that stores their ids.
 5. After git bindings exist, fetch child skill markdown (`gabriel_get_skill_instructions`) and author definitions.
-6. Promote the workspace to a portable registry, validate, then publish. Optionally mint a persona-scoped key.
-7. Summarize with user-facing names, page URL/slug, and what to do next. Do not dump internal ids unless asked.
+6. Author `assets/persona-evals.json`: map every confirmed requirement to typed implementation locators and golden, incomplete-input, adversarial, approval, rejection, and failure scenarios. Validate structure and traceability.
+7. Commit and push children first, promote the workspace, validate it, then publish the Git release candidate. Run every required deterministic mock suite against that exact candidate.
+8. Repair the repository that owns each failing element, republish the candidate after any change, and rerun. Offer live publication only when Structure, Specification coverage, and Functional behavior pass. Live connector smoke tests are optional and never authorize production.
+9. Summarize with user-facing names, page URL/slug, candidate SHA, passing eval run, and what to do next. Do not dump internal ids unless asked.
 
 Ask before publishing or minting keys.
 
@@ -165,8 +167,10 @@ Gateway REST lives under `https://gabrieloperator.com/api/gateway`. Prefer MCP t
 5. **Slash-command workflows** — `gabriel_create_operator_command` with `pageId` and `trigger` (no leading slash). This mints the action promote looks for (`sourceMetadata.kind = persona_slash_command`) and returns `actionId`. Then bind git: managed `kind=workflow`, or `gabriel_initialize_workflow_git` with `agentId` = `pageId` and that `actionId`. Author `assets/workflow.json` with `workflow-builder`. After promote assigns resource keys, register the slash in `assets/chat-config.json` via `digital-twin-page` (`workflowRef` by resource key, never raw database ids). `gabriel_add_operator_action` with `agentId` = `pageId` now mints the same slash command (uses `trigger`, or derives it from `title`). Do not use `gabriel_list_flows` to check this — that lists page endpoints, not slash commands.
 6. **Team agents** — `gabriel_create_team_agent` then `gabriel_initialize_team_agent_git` (own GitHub). Author `assets/team-agent.json` with the `team-agents` skill. These are page endpoints, not team-workspace Page Builder apps.
 7. **Chat config** — session + `gabriel_update_twin_config` for name, first message, system prompt, model. Deep git edits use `digital-twin-page`.
-8. **Portable workspace** — `gabriel_promote_workspace` (assigns resource keys and writes `references/registry.json`), then `gabriel_validate_workspace` (HTTP 200 with `ok: false` is a failure), then `gabriel_publish_workspace`.
-9. **Optional** — `gabriel_publish_twin` for the live page, `gabriel_mint_persona_key` (returned once; `/api/v1` and `/mcp/persona` only).
+8. **Quality specification** — use `gabriel_get_persona_evals`, author the confirmed requirement/case contract, then `gabriel_update_persona_evals` with the current optimistic `expectedHeadSha`. Run `gabriel_validate_persona_evals`; an `ok: false` response is a failure. `rubric` assertions are advisory only; production rules need deterministic assertions.
+9. **Portable workspace candidate** — `gabriel_promote_workspace` (assigns resource keys and writes `references/registry.json`), then `gabriel_validate_workspace` (HTTP 200 with `ok: false` is a failure), then `gabriel_publish_workspace`. This creates a candidate; it does not prove functional readiness.
+10. **Functional readiness** — call `gabriel_get_persona_readiness`, then `gabriel_run_persona_evals` in `mock` mode. Poll with `gabriel_get_persona_eval_run` or `gabriel_list_persona_eval_runs`. Fix the owning root/child repository for every blocking failure, republish, and rerun. A previous pass becomes stale after any fingerprinted change.
+11. **Optional** — only after readiness passes, `gabriel_publish_twin` for the live page and `gabriel_mint_persona_key` (returned once; `/api/v1` and `/mcp/persona` only). `live_smoke` suites use real credentials and approvals but do not count toward the release gate.
 
 A config that points at a missing list or pipeline id does not raise. The feature skips silently. If the persona chats but never acts, check those ids first.
 
@@ -197,6 +201,14 @@ A config that points at a missing list or pipeline id does not raise. The featur
 | `gabriel_promote_workspace` | Assign portable resource keys + write registry v2 |
 | `gabriel_validate_workspace` | Check the bundle (`ok` field, not HTTP status) |
 | `gabriel_publish_workspace` | Pin submodule revisions on the persona root |
+| `gabriel_get_persona_evals` | Read the Git-backed requirement and scenario contract |
+| `gabriel_update_persona_evals` | Validate and commit only `assets/persona-evals.json` with `expectedHeadSha` |
+| `gabriel_validate_persona_evals` | Resolve traceability against the exact pinned workspace |
+| `gabriel_get_persona_readiness` | Read Structure, Specification, Functional, Live, and overall gate status |
+| `gabriel_run_persona_evals` | Start required mock suites or optional live smoke suites |
+| `gabriel_get_persona_eval_run` | Inspect case/assertion results and linked Canvas executions |
+| `gabriel_list_persona_eval_runs` | List candidate-bound eval history |
+| `gabriel_cancel_persona_eval_run` | Cancel a queued/running suite and clean its isolated resources |
 | `gabriel_get_skill_instructions` | Load child skill markdown by topic |
 
 Git-init bodies:
@@ -300,6 +312,7 @@ Deep links the app honors:
 | Features (voice, computer, …) | `.../edit-persona/{pageId}?tab=input` |
 | Slash commands / Canvas agents | `.../edit-persona/{pageId}?tab=ai-agents` |
 | Lists / pipelines | `.../edit-persona/{pageId}?tab=pipelines-workflows` |
+| Requirements / coverage / scenarios / eval runs | `.../edit-persona/{pageId}?tab=quality` |
 | Experience / output | `.../edit-persona/{pageId}?tab=output` |
 | Phone / inbox / chat apps | `.../edit-persona/{pageId}?tab=reach` (`&section=phone`, `inbox`, or `chat-integrations`) |
 | GitHub not connected (own GitHub path) | https://gabrieloperator.com/workspace/developer-settings |
@@ -358,6 +371,17 @@ https://gabrieloperator.com/workspace/edit-persona/{pageId}?tab=ai-agents
 On **AI Operators** → **Operator Slash Commands**, use **Create command**, then bind git to **that** command’s action and promote.
 
 Resource keys are assigned by promote. Do not write `workflowRef` into chat-config until promote has returned them.
+
+## Quality and release discipline
+
+`assets/persona-evals.json` is the traceability source of truth. It answers two independent questions:
+
+1. **Was the brief implemented?** Typed locators must resolve every confirmed requirement to commands, required inputs, list fields, pipeline stages/guards/transitions, workflow or Team-Agent behavior, approvals, outputs, artifacts, and safety boundaries at the pinned revisions.
+2. **Does the assembled Persona work?** Required mock suites run the production command/Canvas/workflow/approval/list/pipeline executor with isolated data and deterministic connector fixtures. Assertions prove task order, decisions, calls, outputs, state changes, artifacts, and forbidden side effects.
+
+The Ryan buyer-qualification and Sloane household-renewal briefs are the canonical translation pattern: preserve their seeded case facts, stage order, approval cards, final result sentence, and explicit “never send/book/pay/change” boundaries as requirements and assertions. Connector fixtures prove the fallback path. Optional live smoke runs prove current OAuth/connector health while keeping normal human approvals.
+
+Workspace publish creates the candidate lock. Live publish is a separate operation protected centrally by the release gate. Always report the candidate SHA and passing run id. Never claim production readiness from structural validation, component `_llm_evals`, `gabriel_workflow_test`, or a live smoke run alone.
 
 ## Safety
 
