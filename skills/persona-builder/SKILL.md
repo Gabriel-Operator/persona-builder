@@ -8,7 +8,7 @@ description: >
   a new persona from a description rather than edit an already-bound git repo.
 metadata:
   author: gabriel-operator
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # Persona Builder
@@ -160,7 +160,7 @@ Gateway REST lives under `https://gabrieloperator.com/api/gateway`. Prefer MCP t
 
 1. **Page** — `gabriel_create_page` / `POST /pages` (`title`, `description`, `pageSlug`, `visibility`). Keep `pageId`. The persona operator id is this `pageId`.
 2. **Lists** — `gabriel_create_data_list` / `POST /data-lists` with `pageId` and `columns`. Do this before any twin config that names a list.
-3. **Pipeline** — `gabriel_create_pipeline` / `POST /pipelines` with `pageId` and `stages`. Then `gabriel_update_pipeline_stages` / `PUT /pipelines/{pipelineId}/stages` with **both** `stages` and `transitions` (create accepts stages but drops transitions).
+3. **Pipeline** — `gabriel_create_pipeline` / `POST /pipelines` with `pageId` and `stages`. Then `gabriel_update_pipeline_stages` / `PUT /pipelines/{pipelineId}/stages` with **both** `stages` and `transitions` (create accepts stages but drops transitions; a stages-only update is now rejected). After git is bound, call `gabriel_sync_pipeline_from_git` or `gabriel_get_pipeline` rather than sending the owner to Results.
 4. **Git** — follow **Git provisioning (ask once)** first.
    - **Managed:** `gabriel_provision_managed_git` for `kind=page` (`pageId`), each list (`kind=list`, `listId`), the pipeline (`kind=pipeline`, `pipelineId`). After slash commands exist, `kind=workflow` with `pageId`/`agentId` + `actionId`. Do not also create/initialize those repos.
    - **Own GitHub:** `gabriel_create_git_repository` then initialize page, lists, and pipeline (`useGithubOAuth: true`, `repoFullName`). Create slash-command actions **before** binding their workflow repos (`actionId` required).
@@ -185,7 +185,10 @@ A config that points at a missing list or pipeline id does not raise. The featur
 | `gabriel_mint_persona_key` | Mint a persona-scoped `/api/v1` key |
 | `gabriel_create_data_list` | Create a list + collection |
 | `gabriel_create_pipeline` | Create a pipeline/machine |
-| `gabriel_update_pipeline_stages` | Replace stages **and** transitions |
+| `gabriel_list_pipelines` | List pipelines for a page (includes `transitionIds`) |
+| `gabriel_get_pipeline` | Inspect the live machine chat will execute |
+| `gabriel_sync_pipeline_from_git` | Force-pull `assets/pipeline.json` into the live projection |
+| `gabriel_update_pipeline_stages` | Replace stages **and** transitions (required). Writes git when bound |
 | `gabriel_create_git_repository` | Create a GitHub repo on the **connected** account (fails without OAuth) |
 | `gabriel_git_provisioning_status` | GitHub connected? Remembered AI Resources setup? Ask-once prompt copy |
 | `gabriel_set_git_provisioning_preference` | Remember managed / own / ask (`null`) |
@@ -283,6 +286,15 @@ curl -X POST $BASE/api/gateway/pages/{pageId}/workspace/promote -H "$AUTH" -H 'C
   -d '{}'
 ```
 
+### Unknown pipeline transition (coding-agent repair)
+
+Chat error `unknown pipeline transition` means the live machine is missing that
+id. Git having it is not enough. Call `gabriel_get_pipeline`, then
+`gabriel_sync_pipeline_from_git` if git already has the id, otherwise
+`gabriel_update_pipeline_stages` with **both** `stages` and all `transitions`.
+Do not Repair, do not create a new pipeline, and do not send the owner to
+Results → Configure pipeline.
+
 ## UI fallback when Gateway or MCP cannot do it
 
 Prefer MCP/REST first. If the tool is missing, returns 404 / not implemented,
@@ -317,9 +329,11 @@ Deep links the app honors:
 | Phone / inbox / chat apps | `.../edit-persona/{pageId}?tab=reach` (`&section=phone`, `inbox`, or `chat-integrations`) |
 | GitHub not connected (own GitHub path) | https://gabrieloperator.com/workspace/developer-settings |
 | Remember git setup (AI Resources) | https://gabrieloperator.com/workspace/settings?section=preferences |
+| Runner toolkit OAuth (Gmail, Sheets, Calendar) | https://gabrieloperator.com/workspace/ai-resources?pageId={pageId} then **Connected toolkits** |
 
-There is no `?section=mcp` deep link. For Composio, send `tab=simulated-world`
-and tell them to expand **MCP connectors**.
+There is no `?section=mcp` deep link. For Composio **keys**, send `tab=simulated-world`
+and tell them to expand **MCP connectors**. For app **Connect** (OAuth), send the
+AI Resources URL — not Edit Persona.
 
 ### When to use this
 
@@ -327,7 +341,7 @@ and tell them to expand **MCP connectors**.
 - Connecting GitHub (`GITHUB_NOT_CONNECTED`)
 - Voice/provider BYOK, computer providers, or other credential UIs
 - Any configure field with no matching `gabriel_*` tool
-- OAuth / “open this site and approve” flows
+- GitHub OAuth / “open Developer Settings and approve” flows
 
 ### Composio keys (common case)
 
@@ -337,16 +351,43 @@ Gateway cannot create the Composio API key. The user must do it in the UI:
    https://gabrieloperator.com/workspace/edit-persona/{pageId}?tab=simulated-world
 2. Or open the persona page and click **Configure**.
 3. On the **Tools** tab, expand **MCP connectors**.
-4. Choose **Composio**, add a key (label + API key), save, then enable the
+4. Choose **Composio**, add a key (label + API key), Save, then enable the
    toolkits they need (Gmail, Sheets, Calendar, …).
-5. After they confirm it is saved, continue with MCP/REST.
+5. After they confirm the key is saved and those toolkits are enabled,
+   continue with MCP/REST.
+
+Do **not** ask them to Connect Gmail, Sheets, Calendar, or any other app on
+**Edit Persona / Tools**. Enabling a toolkit there only publishes which apps
+the persona may use. It does not OAuth the runner's accounts.
+
+**Connect accounts on this persona's AI Resources page** (Canvas then picks
+the same connections up). This is the live-tools step after the key is saved:
+
+1. From the persona chat, click **Connect** or **Connected** (not Configure).
+   Or open
+   https://gabrieloperator.com/workspace/ai-resources?pageId={pageId}
+2. On **Connected toolkits**, click **Connect** on each card (gmail,
+   googlecalendar, googlesheets, …) and finish OAuth. Cards start as
+   "Not connected yet" and should change to Connected.
+3. If they skip AI Resources, Canvas still shows Connect when that stage
+   runs. Connecting only in the Composio dashboard does not count.
+
+If they skip the key, or they skip Connect in both places, use seeded mock
+data and keep building.
+
+![AI Resources Connected toolkits with Connect on Gmail, Google Calendar, and Google Sheets](references/ai-resources-connected-toolkits.jpg)
 
 ### How to tell the user
 
 - Give the full `https://` URL, not “go to settings”.
 - Name the tab (Tools, AI Operators, Data, …) and the control (MCP connectors,
-  Add key, Connect GitHub).
-- Wait for them to finish. Then retry the Gateway call.
+  Add key). For GitHub, send Developer Settings → Connect GitHub.
+- For live Gmail / Sheets / Calendar, name **AI Resources → Connected
+  toolkits** and send the `pageId` URL. Do not send them to Edit Persona to
+  Connect those apps.
+- Wait for them to finish the **key + toolkit enable** step. Then retry the
+  Gateway call. OAuth can happen on AI Resources before the chat test, or in
+  Canvas during the test.
 - Never print or store the Composio/Arcade/vendor secret.
 
 ## Promote skipped the workflow (slash command vs generic action)
