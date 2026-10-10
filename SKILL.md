@@ -795,3 +795,39 @@ The Schools landing experience has a desktop workshop palette and programme prev
 Mirav Neighborhood is specifically for parents/guardians finding kids activities and socializing with other parents. Enable `proximity.familyActivitiesOnly: true` and include a `parentGuardianAcknowledged` boolean mapped to the participant row. Real nearby discovery and activity operations require it to be true; the shared participant pool also filters to acknowledged parents/guardians. Optional kids age groups are broad ranges only, never child names or profiles. This flag defaults off for other personas.
 
 One parent creates a family activity. An already joined parent may call participation action `offer_to_cohost`. Only the original organizer reviews the opaque requestId through `approve` or `decline`; co-hosting is never inferred. `withdraw_cohost` removes only the current runner’s offer/role and leaves participation intact. Leaving an activity also removes the runner’s co-host role. The public result exposes co-host count and only the runner’s own cohost/cohostRequested state; adult offer display labels are shown to the original organizer only. This feature sends no invitations or messages. The Neighborhood landing and mobile previews must consistently show kids playdates, parent connections and shared organizing, rather than a generic adult social app.
+
+### Google photorealistic 3D Maps
+
+Choose `renderMode: "3d"` in the persona's saved Maps configuration (Edit Persona or
+Publish App), or pass it to `gabriel_update_persona_maps_config` / PUT
+`/api/gateway/pages/:pageId/maps-config`. The default is `"standard"`; omitting the
+field preserves the saved value. This opt-in applies to that persona only. Never
+enable it globally for Juno or other personas. Masked author settings, browser
+runtime settings and the native packaging snapshot all expose the selected mode.
+
+Use Google's actual 3D SDKs: web Maps JavaScript `maps3d`, Android
+`play-services-maps3d:0.2.2`, and iOS `GoogleMaps3D` Swift Package pinned to 1.0.0.
+Native 3D is experimental; Android needs API 26+ and iOS needs 16+. A 2D switch
+remains available. The app generator links the iOS package only for 3D personas,
+initializes both SDKs from the saved persona key, registers native platform views,
+and stamps Android's `com.google.android.geo.maps3d.API_KEY`. No Maps keys or
+feature flags belong in environment variables or public portable repositories.
+Changing native configuration requires publishing a new app package.
+
+Draw a terrain-clamped great-circle polygon from the saved center and radius.
+Use the same server-scoped activity and approximate adult-profile pins in 2D and
+3D. Panning, tilt, or switching views must never broaden a search. Schools retain
+school ID and active-profile isolation. Hide all pins during an unsaved area
+preview; clear old activity pins immediately after saving an area, ignore stale
+callbacks, and reload even when the saved coordinates are unchanged. Category
+filters must filter map pins too. Activity markers open their activity details.
+Keep Google attribution and SDK errors visible. Never present generated artwork
+as an accurate geographic layer. AI image generation is not required for 3D Maps.
+
+Enable billing and the Maps JavaScript API / Maps SDKs / Maps 3D SDKs in the key's
+Google Cloud project and apply web referrer, Android package+signing SHA-1 and iOS
+bundle restrictions as appropriate. Key presence is not proof of authorization.
+Test Neighborhood and Schools on iOS and Android with native controllers, geocoding,
+markers, radius previews/saves and mode changes. Report simulator fixture/API tests
+separately from live imagery and physical-device coverage; Google authorization
+failures must remain explicit blockers for live rendering verification.
