@@ -176,7 +176,7 @@ Gateway REST lives under `https://gabrieloperator.com/api/gateway`. Prefer MCP t
 6. **Slash-command workflows** — `gabriel_create_operator_command` with `pageId` and `trigger` (no leading slash). This mints the action promote looks for (`sourceMetadata.kind = persona_slash_command`) and returns `actionId`. Then bind git: managed `kind=workflow`, or `gabriel_initialize_workflow_git` with `agentId` = `pageId` and that `actionId`. Author `assets/workflow.json` with `workflow-builder`. Form-fill / capture-and-fill Canvas commands use Rule 4 (`channels_only`): Collect gets **Answer here**, **Talk**, and **Chat** at runtime, plus automatic draft prefill from the Pipeline list, signed-in profile, and `memoryConfig`. Do not author extra prefill tools, inject the questionnaire into general chat, or put `in_app_chat` in `allowedChannels`. After promote assigns resource keys, register the slash in `assets/chat-config.json` via `digital-twin-page` (`workflowRef` by resource key, never raw database ids) **and** set that command's `voiceAgent.enabled` + non-empty `prompt` so it appears in the Talk picker. `gabriel_add_operator_action` with `agentId` = `pageId` now mints the same slash command (uses `trigger`, or derives it from `title`). Do not use `gabriel_list_flows` to check this — that lists page endpoints, not slash commands.
 7. **Team agents** — `gabriel_create_team_agent` then `gabriel_initialize_team_agent_git` (own GitHub). Author `assets/team-agent.json` with the `team-agents` skill. These are page endpoints, not team-workspace Page Builder apps.
 8. **Chat config** — session + `gabriel_update_twin_config` for name, first message, system prompt, model, `multimodalUnderstanding`, Voice Agents (Gemini Live), and To-Dos off. See **Voice Agents and To-Dos (create defaults)**. Deep git edits use `digital-twin-page`.
-9. **Chat App** — author `assets/chat-app.json` with `chat-app-builder`, copy the same `chatApp` object into `publishedConfig.chatApp`, and preserve `chatAppRef.resourceKey`. Add Playbooks followed immediately by Signals in navigation. Back Signals with one `provider: "automations"` data point, `signal-list` and `schedule-calendar`, and declared `automation.*` actions. Add one disabled `signalPresets` starter for every eligible published playbook; use only portable list resource keys and declared command action IDs. If no playbook is eligible, use an accurate empty state or a monitoring-only preset rather than inventing an action. Every new persona defaults to `chatApp.experience.sessionMode: "stepper"` and must include localization metadata (`chatApp.localization` plus `chatApp.experience.localization`) with English as the source/default language. The public header must expose the shared language selector and the authenticated shell must retain the chosen locale; theme CSS must not hide that control at desktop or mobile breakpoints. Bind its primary action to the intended guided command so web and native restore server-owned progress for new, resumed, edited, and completed sessions. Never put runtime step state, automation enabled state, observations, audit history, or session ids in Git. Patch the complete validated Chat App through `gabriel_update_twin_config` and mirror it in both Git files.
+9. **Chat App** — follow [the standard Home/coach/minimal-sidebar format](../chat-app-builder/references/dashboard-first.md), including its `--dashboard-first` check, then author `assets/chat-app.json` with `chat-app-builder`, copy the same `chatApp` object into `publishedConfig.chatApp`, and preserve `chatAppRef.resourceKey`. Add Playbooks followed immediately by Signals in navigation. Back Signals with one `provider: "automations"` data point, `signal-list` and `schedule-calendar`, and declared `automation.*` actions. Add one disabled `signalPresets` starter for every eligible published playbook; use only portable list resource keys and declared command action IDs. If no playbook is eligible, use an accurate empty state or a monitoring-only preset rather than inventing an action. Every new persona defaults to `chatApp.experience.sessionMode: "stepper"` and must include localization metadata (`chatApp.localization` plus `chatApp.experience.localization`) with English as the source/default language. The public header must expose the shared language selector and the authenticated shell must retain the chosen locale; theme CSS must not hide that control at desktop or mobile breakpoints. Bind its primary action to the intended guided command so web and native restore server-owned progress for new, resumed, edited, and completed sessions. Never put runtime step state, automation enabled state, observations, audit history, or session ids in Git. Patch the complete validated Chat App through `gabriel_update_twin_config` and mirror it in both Git files.
 10. **Optional Persona apps** — when requested, author `assets/persona-app-config.json` schema v2 in the Persona root repository after the page ID, slug, Chat App, and presentation are stable. Use one canonical manifest for mobile and desktop; never create `desktop-app-config.json`, never retain both canonical and legacy `assets/mobile-app-config.json`, and never store credentials, signing material, model weights, model paths, or device preferences. Request the `mobile-app-builder` child skill and follow [the app lifecycle](references/persona-apps.md). Saving in **Publish → Persona Apps** registers the manifest to this Persona and syncs Git; vendor store registration, signing, compilation, and distribution remain separate explicit steps.
 11. **Quality specification** — use `gabriel_get_persona_evals`, author the confirmed requirement/case contract, then `gabriel_update_persona_evals` with the current optimistic `expectedHeadSha`. Run `gabriel_validate_persona_evals`; an `ok: false` response is a failure. `rubric` assertions are advisory only; production rules need deterministic assertions.
 12. **Portable workspace candidate** — `gabriel_promote_workspace` (assigns resource keys and writes `references/registry.json` with Workflow + Pipeline + List only; page-scoped team agents are bound and stamped onto transitions but published into generated `references/workspace.json`), then `gabriel_validate_workspace` (HTTP 200 with `ok: false` is a failure), then `gabriel_publish_workspace`. This creates a candidate; it does not prove functional readiness.
@@ -275,7 +275,7 @@ For every landing page created during persona provisioning:
 
 1. Start from the landing-page-builder scaffold and keep `localization.translation` enabled with English source/default, `autoDetectCountryLanguage: true`, an array-valued `generatedTranslations`, and `regionalPages: []` unless authored regions are requested. Do not offer a create-time switch that disables this default.
 2. Finish and validate the authored English page before generating variants. Render `LandingPageLanguageControl` (or the current shared equivalent) in the public header, verify it remains visible and usable on desktop and mobile, and carry the same locale into the registered authenticated Chat App. A theme must never suppress the selector with responsive CSS.
-3. Read `../landing-page-translations/SKILL.md` and run its maintained incremental generator with the default 37-language catalogue. Run it again after every authored landing-page change before publishing. It must recover unchanged strings from existing/historical assets and translate only new or changed copy. Prefer its local Chrome provider; sending private copy to an external provider still requires explicit authorization. Never fabricate translations or source revisions.
+3. Read `../landing-page-translations/SKILL.md` and run its maintained incremental generator with the agreed language scope (the default catalogue applies only when the user has not specified a smaller scope). Country-edition requests do not authorize additional languages. Run it again after every authored landing-page change before publishing. It must recover unchanged strings from existing/historical assets and translate only new or changed copy. Prefer its local Chrome provider; sending private copy to an external provider still requires explicit authorization. Never fabricate translations or source revisions.
 4. Keep the base landing-page and Persona config compact: generated entries are a manifest, while full copies live in `assets/landing-page.<language>.json` (regional files include the region before the language). Validate every asset plus child/parent mirroring, then commit and push the landing-page child before the parent Persona projection. If translation generation is externally blocked, keep dynamic translation enabled and report the incomplete pre-generated cache explicitly instead of disabling localization.
 5. Treat split indexed storage as a release invariant: `assets/landing-page.json` and the parent's `assets/chat-config.json` must never contain complete pages inside newly written `generatedTranslations[]` entries. Each new entry uses `assetPath` plus `assetSchemaVersion: 2`; its complete page, optional embed copy, and path/source-hash index live only in that language asset. Do not create `landing-page.en.json` or an aggregate translation file. Validation must recompute the current source revision so stale manifests cannot pass.
 6. If the scaffold or an imported Persona contains legacy inline entries, run the translation skill with `--migrate-inline --apply` before validation. Then run `--check` and confirm that the child and parent each contain the same deterministic locale files. Compatibility reads do not make inline storage acceptable for a newly provisioned Persona.
@@ -683,3 +683,115 @@ Prompts adapt editable copy through the existing country generation jobs and
 policies; complete layouts are authored validated config. Translations and
 generated assets live under their matched variant and cannot use a shared global
 translation cache. Preserve human approvals, real-data boundaries and access checks.
+
+## Persona integration support
+
+When integrations are requested, load the `persona-integrations` gateway skill topic and the live registry. Configure published non-secret bindings, author/runner ownership, Mastra voice roles, and vision model references; connect and test accounts through the existing UI. Preserve the current voice runtime unless the user selects Mastra.
+
+## Standard signed-in dashboard composition
+
+Every new Persona Chat App follows [the shared dashboard format](../chat-app-builder/references/dashboard-first.md). Home must include a review-only `Meet <persona>` coach tab (`id: coach`, default tab), domain record/result/decision views. Playbooks belongs to the sidebar, milestones/goals to the Coach control, and routines/Signals/Schedule to Signals; those must never be separate Home tabs or panels. Keep the primary sidebar to Home, named chat history/playbooks, Signals, Data Feed and Media unless the user specifies another need. This `chatApp.coach` is part of the signed-in workspace; it does not enable the separate standalone voice `coachConfig`. Fetch both Gateway topics `chat-app-builder` and `persona-chat-app-layout` before authoring, mirror the exact app into the persona config, and verify the real signed-in Home/Coach controls and minimal sidebar before handoff. A public landing page and slash command alone do not create the signed-in app.
+
+## Context-aware ontology
+
+Use the parent persona’s `assets/ontology.json` for Global → country/region → one authenticated audience → language → terminology. Refer to [the ontology skill](../persona-ontology/SKILL.md) for snapshots, stable IDs, validation, preview and gateway/MCP authoring. Child resources reference that contract; stored instances and credentials remain in existing runtime storage. Preserve captured ontology selections during retries and downstream mappings. Saving an ontology candidate is separate from activation.
+
+## Evidence-backed ROI
+
+For a standard Persona app, include the domain ROI/Impact sidebar destination and connect it to the same landing calculator definitions via `publishedConfig.roiMonitoring`. Read [the ROI algorithm and evidence contract](../chat-app-builder/references/roi-evidence.md) or Gateway topic `persona-roi`: map committed output/List fields to the parent ontology, capture the semantic revision at execution, deduplicate stable identities, preserve acceptance/withdrawal boundaries and measure value with explicit runner baselines or evidenced economic rules. Credits/tokens/top-up funding are distinct; never sum them as one cost or call a budget/row count cash savings. Missing evidence/currency conversion keeps financial ROI unknown. Validate the model and real runner ROI before publication.
+
+Signals uses the shared panel’s inner Signals/Planning controls; never add or show a duplicate outer Signals/Routines tab strip. Scheduled and legacy routines remain in that panel’s existing controls. Meet/Coach tabs must prefix the label with the current persona portrait, even when an older model has a generic AI icon. Configure the actual persona avatar, not the author’s photo.
+
+ROI/Impact is sidebar-only. Use canonical `agents` (existing Kai `grocery-agents`) metadata as the standalone target; never display an ROI tab beside Meet/Coach.
+
+## Opt-in Super Connector location discovery
+
+`publishedConfig.peopleMatchingConfig.proximity` extends the existing matching feature.
+Omission or `enabled: false` preserves existing personas (including Juno). Enable only
+on a persona whose brief requests location discovery. Keep the full matching config;
+do not replace participant/match targets, pairings, portable list refs or profile modes.
+
+```json
+{"enabled":true,"provider":"google_maps","defaultRadiusMeters":2000,"maxRadiusMeters":20000,"latitudeField":"latitude","longitudeField":"longitude","radiusField":"radiusMeters","schoolField":"schoolId","schoolModeIds":["schools"]}
+```
+
+Author two `profileExperience.modes` when requested: `neighborhood` and `schools`.
+Use separate mode questions/navigation and a canonical school ID question for Schools.
+The active mode comes from the authenticated runner's profile, never a caller-supplied
+school or profile override. School IDs scope matching; they do not verify affiliation.
+Store only definitions in Git; location, visibility consent and school answers are runtime data.
+Do not seed real family locations or children’s identity/contact data in portable assets.
+
+Runner surfaces (all use the same enforcement):
+- Workspace MCP: `gabriel_search_nearby_people(pageId)` and
+  `gabriel_set_matching_geofence(pageId, latitude, longitude, radiusMeters)`.
+- Persona MCP: `persona_search_nearby_people()` and `persona_set_matching_geofence(...)`.
+- Gateway REST: `GET /api/gateway/pages/:pageId/people-matching/nearby` and
+  `PUT /api/gateway/pages/:pageId/people-matching/geofence`.
+- Persona REST: `GET /api/v1/matches/nearby`, `PUT /api/v1/matches/geofence`,
+  requiring `digital-twin:matches` and using the key's runner identity.
+- Signed-in web/mobile: `/api/v1/pages/:pageId/people-matching/nearby` and `/geofence`.
+
+A runner selects a location and radius on their active profile. Validate numeric
+coordinates, radius >=100 m and <=the persona maximum (hard cap 50 km). Missing or
+invalid coordinates fail closed. Filter with an exact great-circle distance after
+the database bounding box. School mode also requires the same non-empty school ID;
+profile modes never mix. Return only completed, explicitly visible profiles and
+approximate pins, without contact details or exact home coordinates. Apply the same
+rules to direct proposals, reactive matching, periodic scoring and shared-pool tool
+queries. Existing double opt-in introduction/scheduling gates remain authoritative.
+
+Google Maps configuration is always per persona. Configure it on Edit Persona →
+Super Connector → Google Maps, or Publish App → Persona Apps. Never instruct the
+user to put Maps keys or a Maps feature flag in a build environment. The shared
+editor saves encrypted web/Android/iOS keys and map ID outside portable Git.
+
+Author-only MCP: `gabriel_get_persona_maps_config` and
+`gabriel_update_persona_maps_config` (`pageId`, optional `webApiKey`,
+`androidApiKey`, `iosApiKey`, `mapId`), requiring `digital-twin:admin`.
+GET/PUT `/api/gateway/pages/:pageId/maps-config` expose status/fingerprints and
+save keys. Blank key inputs preserve current credentials. Runner discovery reads
+only the chosen persona's settings; it cannot change author credentials.
+
+Branded app manifest: `integrations.googleMaps = { enabled: true,
+configurationSource: "persona" }`. This portable setting contains no raw key.
+The publishing pipeline resolves saved persona settings into its native packaging
+snapshot and stamps Android SDK metadata and iOS Info.plist automatically. Local
+packaging resolves the same author-only `/maps-config/runtime` endpoint with the
+existing Gabriel account authentication; it does not accept Maps environment keys.
+Publish an updated mobile package after changing native SDK keys. SDK metadata is
+checked through the native persona Maps bridge, not a Dart environment flag.
+Web uses an isolated per-persona map frame so SPA navigation cannot reuse a different
+persona's Google key. Match visibility, geofence and school gates remain server-owned.
+Keep raw keys out of portable repositories, public landing repos, logs and prompts.
+
+Required checks: disabled-feature compatibility, missing/invalid coordinates,
+outside/boundary radius, antimeridian/poles, cross-mode/cross-school exclusion,
+visibility revocation, runner isolation, map mobile layout, and API/MCP parity.
+
+
+### Mobile map activities
+
+For an Amigos-style mobile community persona, use `peopleMatchingConfig.proximity.activitiesEnabled: true` only when the author requests activities. It defaults off and also requires enabled proximity/profile onboarding. Neighborhood and Schools retain separate active profiles. Activity school/mode/owner values always come from the authenticated active profile. Searches and all joins stay inside the saved geofence and same school; panning a map never widens discovery.
+
+Activities are runtime data in `community_activities`, not portable Git seeds. Use `GET/POST /api/gateway/pages/{pageId}/people-matching/activities` and `POST .../activities/{activityId}/{join|leave|cancel}`. Signed-in web/native routes use `/api/v1/pages/{pageId}/people-matching/...`; persona-key routes use `/api/v1/matches/activities`. MCP equivalents are `gabriel_list_nearby_activities`, `gabriel_create_community_activity`, `gabriel_set_activity_participation` and the same `persona_` names without pageId. The chat tool is `community_activities`.
+
+A creation includes title, description, venue, category (`sports|creative|outdoors|study|games|other`), ageGroup (`all_ages|under_6|6_10|11_15|16_plus|adults`), future startsAt with timezone, latitude/longitude, capacity (1–200), and `publicVenueConfirmed: true`. School creation/joining also requires `familyParticipationAcknowledged: true` from a parent or school group adult. Never infer this acknowledgement or invent activity rows. Parents manage family participation; do not collect children's names, contact details, private locations or attendance identities. Responses include aggregate participant count and only the current runner's joined/owned state. Joining is idempotent and capacity is checked atomically; only the host can cancel. These operations never send invitations.
+
+Configure Maps keys in the persona's Edit Persona or Publish App configuration and via maps-config author APIs/MCP, never deployment/build environment variables. Native packages read that saved encrypted persona configuration. Landing screens should show phone devices, location-centered maps, activity pins, filters, activity detail cards and a create action. Label fictional marketing activities as previews; keep functional hero chat and floating chat available.
+
+
+#### School workshop programmes
+
+For school-led workshops, `schoolCommunityRole` on the completed active profile must be `teacher` or `staff` to create a school activity. This role is self-reported during profile onboarding; a matching school domain does not verify affiliation. Parents and external providers can submit a custom school solution brief from the Schools landing palette. No automatic provider bookings or payouts occur. Teachers can combine bounded `groupLabels` (class/group labels only, no child names), set a `learningGoal`, venue, future date, age range and capacity. Categories include `ai_technology` and `music` as well as sports, creative, outdoors, study, games and other.
+
+A school join action creates a pending participation request rather than granting a place. Parents explicitly acknowledge managing family participation and choose a declared group label. Only the activity host can `approve` or `decline`, passing `requestId` through the same participation endpoint/tool. Approval enforces capacity atomically. The host alone receives pending adult requester display labels and group choices; other users receive aggregate counts and their own requested/joined status, never attendee identities or child profiles. School hosts do not consume a family place. Neighborhood joining remains direct.
+
+The Schools landing experience has a desktop workshop palette and programme preview plus a parent mobile companion, separate from the Neighborhood mobile map. Keep the real hero conversation mounted once across tab switches. Put character artwork inside the chat’s bottom-right corner, above the input, and show an AI mistakes disclaimer below the input. The school solution registration uses the established Boli pilot-request route and requires adult contact details only. Research-based funding copy must identify country, source and review date; check open rounds and eligibility, and do not promise subsidies, school profit or provider income.
+
+
+#### Family neighborhood activities
+
+Mirav Neighborhood is specifically for parents/guardians finding kids activities and socializing with other parents. Enable `proximity.familyActivitiesOnly: true` and include a `parentGuardianAcknowledged` boolean mapped to the participant row. Real nearby discovery and activity operations require it to be true; the shared participant pool also filters to acknowledged parents/guardians. Optional kids age groups are broad ranges only, never child names or profiles. This flag defaults off for other personas.
+
+One parent creates a family activity. An already joined parent may call participation action `offer_to_cohost`. Only the original organizer reviews the opaque requestId through `approve` or `decline`; co-hosting is never inferred. `withdraw_cohost` removes only the current runner’s offer/role and leaves participation intact. Leaving an activity also removes the runner’s co-host role. The public result exposes co-host count and only the runner’s own cohost/cohostRequested state; adult offer display labels are shown to the original organizer only. This feature sends no invitations or messages. The Neighborhood landing and mobile previews must consistently show kids playdates, parent connections and shared organizing, rather than a generic adult social app.
