@@ -13,6 +13,11 @@ metadata:
 
 # Persona Builder
 
+## Slash-command governance and cost handoff
+
+Read [command governance](references/command-governance.md) before authoring or running a slash command. Use `gabriel_get_command_governance`, `gabriel_validate_command_governance`, and `gabriel_estimate_command_cost`; include coverage warnings, the effective preset, selected models, estimated USD spend, Gabriel credits, and unknown components in the handoff. Authoring findings warn; irreversible effects still require runtime human approval. Authors may configure optional reviewers but cannot disable authorization, exact-effect approval, or durable audit. Use `gabriel_get_governance_run` and `gabriel_list_governance_events` to inspect evidence; `gabriel_request_action_approval` returns a human review link and never grants approval.
+
+
 Orchestrator skill for coding agents. Given a workspace `gabi_` token and a
 description of what the AI Persona should do, interview the user and create the
 full stack through the Gabriel Gateway.
@@ -432,3 +437,10 @@ Workspace publish creates the candidate lock. Live publish is a separate operati
 - Do not mint or reprint persona keys unless the user asked.
 - Do not store prompt bodies in notes you write back to git.
 - Team-workspace Page Builder apps (`/teams/:teamId/.../apps`) are out of scope here. Page-scoped team-agent endpoints on the persona are in scope.
+
+
+## Existing persona workspace instances
+
+For subscriber workspace creation, sharing and updates, read [Persona Workspaces](references/persona-workspaces.md), or fetch gateway topic `persona-workspaces`. Do not provision a second public persona for a workspace. Bind calls and keys to `personaWorkspaceId`, preserve author capabilities/approvals, and use workspace-owner rights for definition/member changes. Invited Members operate the existing workspace using its owner's access/credits; joining creates no personal workspace or branches. Keep private Coach/profile/memory separate from shared operational records and ontology-backed ROI.
+
+For workspace changes, follow the [workspace validation and frontend packaging contract](references/persona-workspaces.md#validation): run the disposable Lane browser/API test in the platform checkout, verify both Docker frontend input lists for imported shared contracts, and distinguish local fixture coverage from real invitation delivery, account registration and model generation.
