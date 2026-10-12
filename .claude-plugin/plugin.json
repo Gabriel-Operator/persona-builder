@@ -1,7 +1,7 @@
 {
   "name": "persona-builder",
-  "version": "1.3.0",
-  "description": "Interview a user and provision a Gabriel AI Persona from a workspace Gabi token.",
+  "version": "1.6.0",
+  "description": "Create Gabriel Personas with a source-to-outcome framework: ontology, Data Feeds, Signals, approved playbooks and evidence-backed ROI.",
   "author": {
     "name": "Gabriel Operator",
     "email": "hello@gabrieloperator.com"
@@ -12,6 +12,11 @@
   "keywords": [
     "gabriel-operator",
     "persona-builder",
-    "digital-twin"
+    "digital-twin",
+    "ontology",
+    "data-feeds",
+    "signals",
+    "playbooks",
+    "roi"
   ]
 }

@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "persona-builder",
-  "version": "1.2.0",
-  "description": "Sign up on Gabriel Operator, copy a Gabi token, then interview and build your dream AI persona faster.",
+  "version": "1.6.0",
+  "description": "Create Gabriel Personas with a source-to-outcome framework: ontology, Data Feeds, Signals, approved playbooks and evidence-backed ROI.",
   "author": {
     "name": "Gabriel Operator",
     "email": "hello@gabrieloperator.com",
@@ -16,6 +16,11 @@
     "persona-builder",
     "digital-twin",
     "skills",
-    "coding-agent"
+    "coding-agent",
+    "ontology",
+    "data-feeds",
+    "signals",
+    "playbooks",
+    "roi"
   ]
 }

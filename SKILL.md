@@ -13,6 +13,18 @@ metadata:
 ---
 
 # Persona Builder
+## Persona operating framework
+
+Read [the source-to-outcome contract](references/persona-framework.md) when
+connecting domain evidence and actions. Ontology supplies stable semantics;
+Persona Data Feeds acquire validated JSON; Signals explain a change and prepare
+declared playbooks; human approvals control effects; accepted outcomes and
+attributed cost drive ROI. Keep definitions in model repositories and private
+runtime state outside portable Git. Discover `persona-framework`,
+`persona-data-feeds`, `persona-signals`, `persona-playbooks`, `persona-ontology`
+and `persona-roi` through `gabriel_get_skill_instructions`; load the topics
+relevant to the requested work.
+
 
 For authenticated persona workspace creation, switching, sharing, or agent setup, load the gateway skill topic `persona-workspaces` (canonical [`Persona Workspaces`](../persona-workspaces/SKILL.md)). Keep `personaWorkspaceId` separate from business/harness IDs. Each explicitly created owned workspace gets author-owned definition branches and private runtime bindings. Invitees join the existing workspace; joining creates no copy or branch, and it becomes their default only when none existed. Owner-only definition/member management, private Coach/profile/memory, owner-funded execution and workspace-scoped ROI are required. Keep the standard dashboard/sidebar composition. Workspace setup is mandatory and appears alone first; personal profile questions follow as a separate skippable step. Disable onboarding in author playground/editor/chat-only embeds and consume the confirmed save immediately, discarding older reads.
 

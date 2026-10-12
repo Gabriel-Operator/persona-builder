@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "kind": "documentation-only",
+  "topics": [
+    "persona-framework",
+    "persona-ontology",
+    "persona-data-feeds",
+    "persona-signals",
+    "persona-playbooks",
+    "persona-roi"
+  ],
+  "gateway": [
+    "gabriel_get_skill_instructions",
+    "gabriel_get_ontology",
+    "gabriel_validate_ontology",
+    "gabriel_preview_ontology",
+    "gabriel_save_ontology",
+    "gabriel_get_ontology_view",
+    "gabriel_list_persona_data_feeds",
+    "gabriel_get_persona_data_feed",
+    "gabriel_update_twin_config",
+    "gabriel_list_canvas_playbooks",
+    "gabriel_get_canvas_playbook",
+    "gabriel_upsert_canvas_playbook",
+    "gabriel_run_canvas_playbook",
+    "gabriel_get_persona_roi"
+  ],
+  "persona": [
+    "persona_get_skill_instructions",
+    "persona_get_ontology",
+    "persona_list_data_feeds",
+    "persona_get_data_feed",
+    "persona_list_commands",
+    "persona_run_command",
+    "persona_coach_get_app",
+    "persona_coach_query_app",
+    "persona_coach_run_app_action",
+    "persona_get_roi"
+  ],
+  "api": [
+    "GET /api/gateway/skill-instructions?topic=persona-framework",
+    "GET /api/gateway/pages/{pageId}/data-feeds",
+    "GET /api/gateway/pages/{pageId}/data-feeds/{feedId}/versions/{revision}",
+    "GET /api/gateway/pages/{pageId}/roi"
+  ],
+  "boundaries": {
+    "definitions": "Model Git definitions and stable resource keys",
+    "runtime": "Authorized actor/workspace records, pins, approval and evidence",
+    "feedInvocation": "Approved consuming playbook with runtime-minted capability; catalog reads grant none",
+    "roi": "Illustrative calculator assumptions are distinct from accepted outcome valuation"
+  }
+}

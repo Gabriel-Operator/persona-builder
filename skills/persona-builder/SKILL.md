@@ -13,6 +13,15 @@ metadata:
 
 # Persona Builder
 
+## Persona operating framework
+
+Read [the operating framework](references/persona-framework.md) to connect
+ontology, Persona Data Feeds, Signals, approved playbooks and ROI. Request
+Gateway topics persona-framework, persona-data-feeds, persona-signals,
+persona-playbooks, persona-ontology and persona-roi for the detailed contracts.
+Keep source evidence, approval and accepted outcome in one trace; definitions
+live in model repos, while credentials, enabled state and runtime rows do not.
+
 ## Slash-command governance and cost handoff
 
 Read [command governance](references/command-governance.md) before authoring or running a slash command. Use `gabriel_get_command_governance`, `gabriel_validate_command_governance`, and `gabriel_estimate_command_cost`; include coverage warnings, the effective preset, selected models, estimated USD spend, Gabriel credits, and unknown components in the handoff. Authoring findings warn; irreversible effects still require runtime human approval. Authors may configure optional reviewers but cannot disable authorization, exact-effect approval, or durable audit. Use `gabriel_get_governance_run` and `gabriel_list_governance_events` to inspect evidence; `gabriel_request_action_approval` returns a human review link and never grants approval.

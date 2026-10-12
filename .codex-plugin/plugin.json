@@ -1,7 +1,7 @@
 {
   "name": "persona-builder",
-  "version": "1.3.0",
-  "description": "Sign up on Gabriel Operator, copy a Gabi token, then interview and provision a Gabriel AI Persona.",
+  "version": "1.6.0",
+  "description": "Create Gabriel Personas with a source-to-outcome framework: ontology, Data Feeds, Signals, approved playbooks and evidence-backed ROI.",
   "author": {
     "name": "Gabriel Operator",
     "email": "hello@gabrieloperator.com",
@@ -15,13 +15,18 @@
     "persona-builder",
     "digital-twin",
     "skills",
-    "coding-agent"
+    "coding-agent",
+    "ontology",
+    "data-feeds",
+    "signals",
+    "playbooks",
+    "roi"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Persona Builder",
     "shortDescription": "Sign up + copy Gabi token",
-    "longDescription": "Sign up at https://gabrieloperator.com/signup. Open Workspace, go to Dashboard, and copy your Gabi token (the key that starts with gabi_). Connect that token in ChatGPT before you run this plugin. Do not paste the raw token into chat.\n\nThis plugin interviews you and helps you build your dream AI persona faster.",
+    "longDescription": "Design and maintain a complete domain-specific AI Persona. Connect ontology, Data Feeds, Signals, reviewed playbooks and evidence-backed ROI. Author model-owned apps and workflows; keep live credentials and runtime evidence in Gabriel Operator. Use the installed gateway setup when authorized live provisioning is required.",
     "developerName": "Gabriel Operator",
     "category": "Productivity",
     "capabilities": [
@@ -32,9 +37,9 @@
     "privacyPolicyURL": "https://gabrieloperator.com/privacy",
     "termsOfServiceURL": "https://gabrieloperator.com/terms",
     "defaultPrompt": [
-      "I signed up on Gabriel Operator and connected my Gabi token. Create a persona from this description.",
-      "Interview me and provision a new Gabriel persona end to end.",
-      "Set up lists, pipeline, workflows, and git for a new Gabriel persona."
+      "Design a domain-specific Persona with ontology, Data Feeds, Signals, playbooks and ROI.",
+      "Connect this Persona model\u2019s sources, approved actions and outcome evidence.",
+      "Review the Persona\u2019s planning calculator and accepted-evidence ROI mappings."
     ],
     "brandColor": "#2563EB",
     "composerIcon": "./assets/icon.png",
