@@ -23,7 +23,8 @@
     "gabriel_get_canvas_playbook",
     "gabriel_upsert_canvas_playbook",
     "gabriel_run_canvas_playbook",
-    "gabriel_get_persona_roi"
+    "gabriel_get_persona_roi",
+    "gabriel_calculate_persona_roi"
   ],
   "persona": [
     "persona_get_skill_instructions",
@@ -35,7 +36,8 @@
     "persona_coach_get_app",
     "persona_coach_query_app",
     "persona_coach_run_app_action",
-    "persona_get_roi"
+    "persona_get_roi",
+    "persona_calculate_roi"
   ],
   "api": [
     "GET /api/gateway/skill-instructions?topic=persona-framework",

@@ -26,7 +26,7 @@ and `persona-roi` through `gabriel_get_skill_instructions`; load the topics
 relevant to the requested work.
 
 
-For authenticated persona workspace creation, switching, sharing, or agent setup, load the gateway skill topic `persona-workspaces` (canonical [`Persona Workspaces`](../persona-workspaces/SKILL.md)). Keep `personaWorkspaceId` separate from business/harness IDs. Each explicitly created owned workspace gets author-owned definition branches and private runtime bindings. Invitees join the existing workspace; joining creates no copy or branch, and it becomes their default only when none existed. Owner-only definition/member management, private Coach/profile/memory, owner-funded execution and workspace-scoped ROI are required. Keep the standard dashboard/sidebar composition. Workspace setup is mandatory and appears alone first; personal profile questions follow as a separate skippable step. Disable onboarding in author playground/editor/chat-only embeds and consume the confirmed save immediately, discarding older reads.
+For authenticated persona workspace creation, switching, sharing, or agent setup, load the gateway skill topic `persona-workspaces` (canonical [`Persona Workspaces`](../persona-workspaces/SKILL.md)). Keep `personaWorkspaceId` separate from business/harness IDs. Each explicitly created owned workspace gets author-owned definition branches and private runtime bindings. Invitees join the existing workspace; joining creates no copy or branch, and it becomes their default only when none existed. Owner-only definition/member management, private Coach/profile/memory, owner-funded execution and workspace-scoped ROI are required. Keep the standard dashboard/sidebar composition. Workspace setup is mandatory and appears alone first; personal profile questions follow as a separate skippable step. Disable onboarding in author playground/editor/chat-only embeds and consume the confirmed save immediately, discarding older reads. Follow the `persona-workspaces` startup/provisioning contract: opening a page never provisions runner Git or opens its setup modal; saved metadata and failed/provisioning/ready states are separate, with owner Retry and automatic recovery after ready. Confirm author write access to the complete bound repository graph.
 
 For workspace changes, follow the [workspace validation and frontend packaging contract](../persona-workspaces/SKILL.md#validation): run the disposable Lane browser/API test in the platform checkout, verify both Docker frontend input lists for imported shared contracts, and distinguish local fixture coverage from real invitation delivery, account registration and model generation.
 
@@ -714,6 +714,25 @@ Every new Persona Chat App follows [the shared dashboard format](../chat-app-bui
 
 Use the parent persona’s `assets/ontology.json` for Global → country/region → one authenticated audience → language → terminology. Refer to [the ontology skill](../persona-ontology/SKILL.md) for snapshots, stable IDs, validation, preview and gateway/MCP authoring. Child resources reference that contract; stored instances and credentials remain in existing runtime storage. Preserve captured ontology selections during retries and downstream mappings. Saving an ontology candidate is separate from activation.
 
+## Compact public pricing and ROI
+
+For newly authored public calculators, load gateway topic `persona-roi` and its
+`references/compact-calculator.md`. Use the versioned compact model with exactly
+three authored forecast parameters, a monthly capped offer, one investment slider and read-only authored forecasts,
+and daily/weekly/monthly comparisons. Ensure every intended audience renders its
+section and one localized Pricing link in desktop/mobile navigation. Unknown
+savings remain null; negative values remain negative. Net saved minutes already
+include human review and must not become a saved manual baseline automatically.
+
+Use `gabriel_calculate_persona_roi` (or bound `persona_calculate_roi`) to inspect
+planning arithmetic after compatible platform support and a published model exist.
+These read-only calculations are separate from `gabriel_get_persona_roi` /
+`persona_get_roi`, which read accepted outcome evidence. Prices, provider costs,
+consumed/refunded credits and top-up funding remain distinct. Validate the real
+calculator path, all audience assets, translated copy and screenshot/UI coverage.
+Do not invent prices, cash value or measured outcomes to fill gaps; quotes and null
+inputs are valid. Preserve existing historical ROI definitions and unrelated models.
+
 ## Evidence-backed ROI
 
 For a standard Persona app, include the domain ROI/Impact sidebar destination and connect it to the same landing calculator definitions via `publishedConfig.roiMonitoring`. Read [the ROI algorithm and evidence contract](../chat-app-builder/references/roi-evidence.md) or Gateway topic `persona-roi`: map committed output/List fields to the parent ontology, capture the semantic revision at execution, deduplicate stable identities, preserve acceptance/withdrawal boundaries and measure value with explicit runner baselines or evidenced economic rules. Credits/tokens/top-up funding are distinct; never sum them as one cost or call a budget/row count cash savings. Missing evidence/currency conversion keeps financial ROI unknown. Validate the model and real runner ROI before publication.
@@ -854,3 +873,31 @@ failures must remain explicit blockers for live rendering verification.
 ## Command governance and cost handoff
 
 For slash-command authoring, read [command governance and estimated cost](references/command-governance.md). Report warnings and the selected review profile with cost comparisons before handing off the command.
+
+
+## Required playbook team protocol
+
+External specialist runtimes use stable private connection/profile references and pinned contracts. Credentials, live task handles and data-release consent stay outside portable `team` JSON. Only specialists may select an external runtime; Gabriel retains coordination, review, scoring, judging, audit and memory authority. Use `gabriel_list_external_agent_connections` / `gabriel_validate_external_agent_connection` for authorized inspection. Missing verified bounds, authority or execution adapters hold activation; never replace an external selection with native work or claim synthetic tests establish provider readiness.
+
+Every slash command and directly runnable saved Canvas playbook owns a human-reviewed schema-v1 `team`. Generate or validate it after defining steps with `gabriel_propose_playbook_team` / `gabriel_validate_playbook_team`, then return the authenticated review URL. Use `gabriel_update_playbook_team` with the current `expectedFingerprint` to save a draft. API/MCP clients cannot confirm, import or manufacture human approval. Activation and new launches fail with `TEAM_REVIEW_REQUIRED` or `TEAM_REVIEW_STALE` until the author/owner confirms.
+
+Define contextual specialist sub-agents with explicit goals, start conditions, outputs, completion criteria, approved stage IDs, hierarchy, recipients and finite invocation/step/time limits. Coordinator, reviewer, scorer, independent judge, auditor and memory steward are always present. Assign one integration owner. Preserve ontology usage, feed revision references, declared record operations, optional recorded Signal triggers and authored outcome metric bindings; missing semantics or capabilities block affected work. Deterministic actions remain tools of the appropriate specialist.
+
+Runtime authority, claims, exact-effect approvals, audit, encrypted artifacts and private memory are server-owned. Delegation never expands permissions. Downstream work consumes accepted versions. Unknown effects require reconciliation; never automatically repeat them. Provider costs and Gabriel credits are separate. A delivered artifact does not prove economic value: capture accepted committed evidence with the producing ontology/calculator pins and saved baseline, preserving unknown costs and coverage gaps. Team/ontology/Signal/calculator changes remain reviewed proposals. Portable Git carries definitions and stable references only.
+
+
+### Finalization and review evidence
+
+Task outputs may declare `output.ontology` projections and `recordOutputs` mappings. Each mapping uses JSON pointers, an existing List/pipeline resource key and a permitted create/update/delete operation. Map actual accepted values; updates/deletes require an observed runtime record ID. The server prepares encrypted intents and commits them only after final judging through existing authorization and exact-effect approval. Native action steps retain their original action-boundary controls. Do not claim a generated draft has been persisted or economically accepted.
+
+Coordinator-directed revisions preserve the reviewed goal and capability envelope. Rejected drafts, accepted versions and source provenance remain auditable. The memory steward selects bounded facts/decisions/lessons from accepted evidence; server-copied values retain artifact/version references. Reuse requires finalized successful work with compatible actor/workspace/team/ontology semantics. Quality exceptions retain history without promoting new facts. Use the authenticated run UI to inspect saved evidence, provide human scores and reasons for every criterion, and review improvement drafts. Mock suites are not human reference results. Feedback drafts require renewed confirmation; persistence, accounting and authority failures cannot be waived as quality exceptions.
+
+Real navigation and transformations require owned work products. An opaque capability that cannot enforce individual effect boundaries blocks confirmation with `TEAM_CAPABILITY_GOVERNANCE_REQUIRED`; replace it with governed tools rather than approving around the restriction.
+
+For a family activity or school-workshop flagship, read [the community activity loop contract](../persona-framework/references/community-activity-loop.md). It covers shared guided state, scoped refreshable feeds, opt-in Signals, reviewed team execution and adult-confirmed occurrence ROI.
+
+For a Persona that publishes learning courses and awards adult-verified badges, read [the learning course contract](../chat-app-builder/references/learning-courses.md). A course workflow names its Canvas tasks in `chatApp.learning.course.tasks` (brief, script, quiz, optional film, narration and frames, and the approve and publish gates) and the platform reads them from there; no task, command or tab name is built in.
+
+For pages a Persona serves under its own address (`/persona/<slug>/…`), declared in `chatApp.routes` and composed from registered components, read [the persona routes contract](../chat-app-builder/references/persona-routes.md).
+
+Public pricing widgets expose customer investment only. Outputs (work delivered, time returned and value) are read-only. Author bounded free access for every audience and seven-day trials for paid plans; planning quotes do not change billing. Source fixed forecast assumptions and disclose benchmark limitations, human review, full-use assumptions and negative returns. See the compact-calculator reference.
